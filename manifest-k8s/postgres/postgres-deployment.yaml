@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: icgroup
+  labels:
+    app: postgres
+    env: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+        env: prod
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres
+              key: POSTGRES_USER  # Récupère l'utilisateur de la base de données depuis le Secret
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres
+              key: POSTGRES_PASSWORD  # Récupère le mot de passe depuis le Secret
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres
+              key: POSTGRES_DB  # Récupère le nom de la base de données depuis le Secret
+        volumeMounts:
+        - name: pgdata
+          mountPath: /var/lib/postgresql/data  # Emplacement des données PostgreSQL
+      volumes:
+      - name: pgdata
+        persistentVolumeClaim:
+          claimName: postgres-pvc  # PVC utilisé pour stocker les données persistantes
+

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: odoo-pvc
+  namespace: icgroup
+spec:
+  accessModes:
+    - ReadWriteMany  # Permet plusieurs pods d'écrire sur le PVC
+  resources:
+    requests:
+      storage: 5Gi  # Taille du PVC
+  volumeMode: Filesystem
+  storageClassName: manual
+

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgadmin-config
+  namespace: icgroup
+data:
+  servers.json: |
+    {
+      "Servers": {
+        "1": {
+          "Name": "docker_postgres",
+          "Group": "docker_postgres_group",
+          "Port": 5432,
+          "Username": "aissatou",
+          "Host": "",
+          "SSLMode": "prefer",
+          "MaintenanceDB": "postgres"
+        }
+      }
+    }
+

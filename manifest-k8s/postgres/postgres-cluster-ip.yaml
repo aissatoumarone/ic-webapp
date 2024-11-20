@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-clusterip
+  namespace: icgroup
+  labels:
+    app: postgres
+    env: prod
+spec:
+  type: ClusterIP  # Service interne au cluster
+  selector:
+    app: postgres  # Sélectionner les pods avec le label "app: postgres"
+  ports:
+    - protocol: TCP
+      port: 5432         # Port du service que les autres applications peuvent utiliser
+      targetPort: 5432   # Port du conteneur PostgreSQL
+

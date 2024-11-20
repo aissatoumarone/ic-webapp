@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo
+  namespace: icgroup
+  labels:
+    app: odoo
+    env: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: odoo
+      env: prod
+  template:
+    metadata:
+      labels:
+        app: odoo
+        env: prod
+    spec:
+      containers:
+        - name: odoo
+          image: odoo:latest
+          ports:
+            - containerPort: 8069
+          env:
+            - name: ODOO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: odoo-secret  # Nom du Secret contenant les variables
+                  key: ODOO_USER     # Clé dans le Secret pour l'utilisateur
+            - name: ODOO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: odoo-secret  # Nom du Secret contenant le mot de passe
+                  key: ODOO_PASSWORD # Clé dans le Secret pour le mot de passe
+          volumeMounts:
+            - name: odoo-persistent-storage
+              mountPath: /etc/odoo
+            - name: lib-odoo-persistent-storage
+              mountPath: /var/lib/odoo
+            - name: extra-addons-persistent-storage
+              mountPath: /mnt/extra-addons
+      volumes:
+        - name: odoo-persistent-storage
+          hostPath:
+            path: /data_docker/config
+        - name: lib-odoo-persistent-storage
+          persistentVolumeClaim:
+            claimName: odoo-pvc
+        - name: extra-addons-persistent-storage
+          hostPath:
+            path: /data_docker/addons
+

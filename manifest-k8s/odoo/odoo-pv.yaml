@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: odoo-pv
+  namespace: icgroup
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteMany  # Permet plusieurs pods d'écrire sur le PV
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual  # Ne pas utiliser une StorageClass par défaut
+  hostPath:
+    path: /data_k8s/lib-odoo  # Chemin sur le nœud de stockage
+
